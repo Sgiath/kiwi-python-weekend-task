@@ -1,0 +1,2 @@
+class TooManyBags(Exception):
+    pass

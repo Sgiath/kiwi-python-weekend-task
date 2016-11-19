@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 from itertools import combinations
-from typing import List, Iterator
+from typing import Iterator, List
 
 from flight import Flight
 

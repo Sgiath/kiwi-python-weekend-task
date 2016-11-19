@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 from typing import List
+
+from exceptions import TooManyBags
 
 __all__ = ['Flight']
 
@@ -8,12 +9,11 @@ __all__ = ['Flight']
 class Flight(object):
     """Class for holding information about flight"""
     date_format = '%Y-%m-%dT%H:%M:%S'
-    """int: datetime string format"""
 
-    def __init__(self, source: str, destination: str,
-                 departure: datetime, arrival: datetime,
-                 flight_number: str, price: int, bags_allowed: int,
-                 bag_price: int) -> None:
+    def __init__(
+            self, source: str, destination: str, departure: datetime,
+            arrival: datetime, flight_number: str, price: int,
+            bags_allowed: int, bag_price: int) -> None:
         """Initialize with given values
 
         Arguments:
@@ -77,14 +77,16 @@ class Flight(object):
     def price_1bag(self) -> int:
         """Flight price with one bag"""
         if self._bags_allowed < 1:
-            raise Exception('Bag is not allowed for this flight.')
+            raise TooManyBags('Bag is not allowed for this flight ({})'
+                              .format(self))
         return self._price + self._bag_price
 
     @property
     def price_2bag(self) -> int:
         """Flight price with two bags"""
         if self._bags_allowed < 1:
-            raise Exception('Two bags are not allowed for this flight.')
+            raise TooManyBags('Two bags are not allowed for this flight ({})'
+                              .format(self))
         return self._price + 2 * self._bag_price
 
     @property
@@ -113,7 +115,7 @@ class Flight(object):
         return [f for f in self._follows if f.bags_allowed >= 2]
 
     def add_follows(self, flights: List['Flight']) -> None:
-        """Add flights that follows from all flights
+        """Add flights that follows from given flights
 
         Arguments:
             flights: all flights where should be looking for flights that
